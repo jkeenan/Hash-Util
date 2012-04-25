@@ -1,17 +1,6 @@
-#!/usr/bin/perl -Tw
-
-BEGIN {
-    if ($ENV{PERL_CORE}) {
-	require Config; import Config;
-	no warnings 'once';
-	if ($Config{extensions} !~ /\bHash\/Util\b/) {
-	    print "1..0 # Skip: Hash::Util was not built\n";
-	    exit 0;
-	}
-    }
-}
-
+# perl
 use strict;
+use warnings;
 use Test::More;
 my @Exported_Funcs;
 BEGIN {
