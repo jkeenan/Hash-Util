@@ -12,6 +12,8 @@
 *.gcov
 *.gcda
 *.gcno
+*.gz
+*.zip
 
 # Ignore profiling files
 callgrind.out.*

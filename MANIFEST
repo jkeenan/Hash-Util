@@ -1,0 +1,5 @@
+Changes
+lib/Hash/Util.pm
+Makefile.PL
+MANIFEST			This list of files
+t/Util.t
