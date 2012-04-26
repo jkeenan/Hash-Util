@@ -1,0 +1,9 @@
+README for Hash-Utils
+
+In this repository you will find my attempt to refactor Perl 5 core
+distribution Hash-Util and to extend its test coverage.
+
+Name:       James E Keenan
+email:      jkeenan@cpan.org
+CPAN ID:    JKEENAN
+IRC:        kid51
