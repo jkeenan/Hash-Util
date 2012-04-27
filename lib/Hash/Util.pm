@@ -30,7 +30,7 @@ our @EXPORT_OK  = qw(
 
                      hash_seed hv_store
                     );
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 require XSLoader;
 XSLoader::load();
 
@@ -359,8 +359,11 @@ sub unlock_hashref_recurse {
 sub   lock_hash_recurse (\%) {   lock_hashref_recurse(@_) }
 sub unlock_hash_recurse (\%) { unlock_hashref_recurse(@_) }
 
+=item B<hashref_locked>
+
 =item B<hash_locked>
 
+  hashref_locked(\%hash) and print "Hash is locked!\n";
   hash_locked(%hash) and print "Hash is locked!\n";
 
 Returns true if the hash and its keys are locked.
@@ -374,8 +377,11 @@ sub hashref_locked {
 
 sub hash_locked(\%) { hashref_locked(@_) }
 
+=item B<hashref_unlocked>
+
 =item B<hash_unlocked>
 
+  hashref_unlocked(\%hash) and print "Hash is unlocked!\n";
   hash_unlocked(%hash) and print "Hash is unlocked!\n";
 
 Returns true if the hash and its keys are unlocked.
