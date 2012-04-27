@@ -25,7 +25,7 @@ BEGIN {
                      hash_seed hv_store
                     );
 #    plan tests => 208 + @Exported_Funcs;
-    plan tests => 207 + @Exported_Funcs;
+    plan tests => 219 + @Exported_Funcs;
     use_ok 'Hash::Util', @Exported_Funcs;
 }
 foreach my $func (@Exported_Funcs) {
@@ -168,6 +168,16 @@ is( $hash{locked}, 42,  'unlock_value' );
     ok( !Internals::SvREADONLY($hash{bar}),'Was unlocked $hash{bar}' );
 }
 
+TODO: {
+    local $TODO = 'negated hash(ref)_(un)locked not yet working';
+    my %hash = (foo => 42, bar => 23);
+    ok( ! hashref_locked( { %hash } ), 'hashref_locked negated' );
+    ok( ! hash_locked( %hash ), 'hash_locked negated' );
+
+    lock_hash( %hash );
+    ok( ! hashref_unlocked( { %hash } ), 'hashref_unlocked negated' );
+    ok( ! hash_unlocked( %hash ), 'hash_unlocked negated' );
+}
 
 #lock_keys(%ENV);
 #eval { () = $ENV{I_DONT_EXIST} };
@@ -437,6 +447,17 @@ ok($hash_seed >= 0, "hash_seed $hash_seed");
     is("@keys","0 2 4 6 8",'lock_ref_keys_plus() @keys DDS/t');
 }
 {
+    my %hash=(0..9, 'a' => 'alpha');
+    lock_ref_keys_plus(\%hash,'a'..'f');
+    ok(Internals::SvREADONLY(%hash),'lock_ref_keys_plus args overlap');
+    my @hidden=sort(hidden_keys(%hash));
+    my @legal=sort(legal_keys(%hash));
+    my @keys=sort(keys(%hash));
+    is("@hidden","b c d e f",'lock_ref_keys_plus() @hidden overlap');
+    is("@legal","0 2 4 6 8 a b c d e f",'lock_ref_keys_plus() @legal overlap');
+    is("@keys","0 2 4 6 8 a",'lock_ref_keys_plus() @keys overlap');
+}
+{
     my %hash=(0..9);
     lock_keys_plus(%hash,'a'..'f');
     ok(Internals::SvREADONLY(%hash),'lock_keys_plus args DDS/t');
@@ -446,6 +467,17 @@ ok($hash_seed >= 0, "hash_seed $hash_seed");
     is("@hidden","a b c d e f",'lock_keys_plus() @hidden DDS/t 3');
     is("@legal","0 2 4 6 8 a b c d e f",'lock_keys_plus() @legal DDS/t 3');
     is("@keys","0 2 4 6 8",'lock_keys_plus() @keys DDS/t 3');
+}
+{
+    my %hash=(0..9, 'a' => 'alpha');
+    lock_keys_plus(%hash,'a'..'f');
+    ok(Internals::SvREADONLY(%hash),'lock_keys_plus args overlap non-ref');
+    my @hidden=sort(hidden_keys(%hash));
+    my @legal=sort(legal_keys(%hash));
+    my @keys=sort(keys(%hash));
+    is("@hidden","b c d e f",'lock_keys_plus() @hidden overlap non-ref');
+    is("@legal","0 2 4 6 8 a b c d e f",'lock_keys_plus() @legal overlap non-ref');
+    is("@keys","0 2 4 6 8 a",'lock_keys_plus() @keys overlap non-ref');
 }
 
 {
