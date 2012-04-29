@@ -23,9 +23,10 @@ BEGIN {
                      hidden_ref_keys legal_ref_keys
 
                      hash_seed hv_store
+                     lock_hash_recurse unlock_hash_recurse
                     );
 #    plan tests => 208 + @Exported_Funcs;
-    plan tests => 219 + @Exported_Funcs;
+    plan tests => 225 + @Exported_Funcs;
     use_ok 'Hash::Util', @Exported_Funcs;
 }
 foreach my $func (@Exported_Funcs) {
@@ -496,3 +497,27 @@ ok($hash_seed >= 0, "hash_seed $hash_seed");
     is_deeply(\@ph, \@bam, "Placeholders in place");
 }
 
+{
+    my %hash = (
+        a   => 'alpha',
+        b   => [ qw( beta gamma delta ) ],
+        c   => [ 'epsilon', { zeta => 'eta' }, ],
+        d   => { theta => 'iota' },
+    );
+    lock_hash_recurse(%hash);
+    ok( hash_locked(%hash),
+        "lock_hash_recurse(): top-level hash locked" );
+    ok( hash_locked(%{$hash{d}}),
+        "lock_hash_recurse(): element which is hashref locked" );
+    ok( ! hash_locked(%{$hash{c}[1]}),
+        "lock_hash_recurse(): element which is hashref in array ref not locked" );
+
+    unlock_hash_recurse(%hash);
+    ok( hash_unlocked(%hash),
+        "unlock_hash_recurse(): top-level hash unlocked" );
+    ok( hash_unlocked(%{$hash{d}}),
+        "unlock_hash_recurse(): element which is hashref unlocked" );
+    ok( hash_unlocked(%{$hash{c}[1]}),
+        "unlock_hash_recurse(): element which is hashref in array ref not locked" );
+
+}

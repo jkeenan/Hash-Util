@@ -29,6 +29,7 @@ our @EXPORT_OK  = qw(
                      hidden_ref_keys legal_ref_keys
 
                      hash_seed hv_store
+                     lock_hash_recurse unlock_hash_recurse
                     );
 our $VERSION = '0.12';
 require XSLoader;
@@ -72,6 +73,7 @@ Hash::Util - A selection of general-utility hash subroutines
                      hidden_ref_keys legal_ref_keys
 
                      hash_seed hv_store
+                     lock_hash_recurse unlock_hash_recurse
                    );
 
   %hash = (foo => 42, bar => 23);
@@ -142,8 +144,8 @@ the hash before you call lock_keys() so this shouldn't be a problem.
 
 Removes the restriction on the %hash's keyset.
 
-B<Note> that if any of the values of the hash have been locked they will not be unlocked
-after this sub executes.
+B<Note> that if any of the values of the hash have been locked they will not
+be unlocked after this sub executes.
 
 Both routines return a reference to the hash operated on.
 
@@ -314,9 +316,9 @@ lock_hash() locks an entire hash and any hashes it references recursively,
 making all keys and values read-only. No value can be changed, no keys can
 be added or deleted.
 
-B<Only> recurses into hashes that are referenced by another hash. Thus a
-Hash of Hashes (HoH) will all be restricted, but a Hash of Arrays of Hashes
-(HoAoH) will only have the top hash restricted.
+This method B<only> recurses into hashes that are referenced by another hash.
+Thus a Hash of Hashes (HoH) will all be restricted, but a Hash of Arrays of
+Hashes (HoAoH) will only have the top hash restricted.
 
     unlock_hash_recurse(%hash);
 
