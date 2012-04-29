@@ -152,7 +152,7 @@ is( $hash{locked}, 42,  'unlock_value' );
 {
     my %hash = (foo => 42, bar => 23);
     lock_hash( %hash );
-    ok( hashref_locked( { %hash } ), 'hashref_locked' );
+    ok( hashref_locked( \%hash ), 'hashref_locked' );
     ok( hash_locked( %hash ), 'hash_locked' );
 
     ok( Internals::SvREADONLY(%hash),'Was locked %hash' );
@@ -168,14 +168,13 @@ is( $hash{locked}, 42,  'unlock_value' );
     ok( !Internals::SvREADONLY($hash{bar}),'Was unlocked $hash{bar}' );
 }
 
-TODO: {
-    local $TODO = 'negated hash(ref)_(un)locked not yet working';
+{
     my %hash = (foo => 42, bar => 23);
     ok( ! hashref_locked( { %hash } ), 'hashref_locked negated' );
     ok( ! hash_locked( %hash ), 'hash_locked negated' );
 
     lock_hash( %hash );
-    ok( ! hashref_unlocked( { %hash } ), 'hashref_unlocked negated' );
+    ok( ! hashref_unlocked( \%hash ), 'hashref_unlocked negated' );
     ok( ! hash_unlocked( %hash ), 'hash_unlocked negated' );
 }
 

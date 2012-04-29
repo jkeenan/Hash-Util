@@ -372,7 +372,7 @@ Returns true if the hash and its keys are locked.
 
 sub hashref_locked {
     my $hash=shift;
-    Internals::SvREADONLY($hash);
+    Internals::SvREADONLY(%$hash);
 }
 
 sub hash_locked(\%) { hashref_locked(@_) }
@@ -390,7 +390,7 @@ Returns true if the hash and its keys are unlocked.
 
 sub hashref_unlocked {
     my $hash=shift;
-    !Internals::SvREADONLY($hash);
+    !Internals::SvREADONLY(%$hash);
 }
 
 sub hash_unlocked(\%) { hashref_unlocked(@_) }
